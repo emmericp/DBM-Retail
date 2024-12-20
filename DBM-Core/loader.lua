@@ -27,6 +27,7 @@ function UnitPosition() return end
 function GetInstanceInfo() return nil, nil, nil, nil, nil, nil, nil, nil, nil end
 function Ambiguate(str) return str end
 function PlaySoundFile() return end
+function UnitIsDeadOrGhost() return false end
 function tostringall(str, ...)
 	if select("#", ...) == 0 then
 		return tostring(str)
@@ -44,6 +45,8 @@ end
 local preciseTime
 function GetTimePreciseSec() return preciseTime end
 date = os.date
+
+format = string.format
 
 C_LFGInfo = {
 	GetDungeonInfo = function() return end
@@ -82,7 +85,8 @@ function CreateFrame()
 	return makeMock()
 end
 
-GetSpellInfo = makeMock()
+dofile("data/Spells.lua")
+
 C_Map = makeMock()
 C_Map.GetBestMapForUnit = function() return 0 end
 ChatThrottleLib = makeMock()
@@ -115,8 +119,16 @@ strsplit = function(delim, str)
 	return unpack(results)
 end
 string.split = strsplit
-string.trim = function(str) return str:gsub("%s*(.-)%s*", "%1") end
-string.join = function(sep, ...) local res = "" for i = 1, select("#", ...) do res = res .. sep .. select(i, ...) end return res end
+string.trim = function(str)
+	return str:gsub("^%s*(.-)%s*$", "%1")
+end
+string.join = function(sep, ...)
+	local res = ...
+	for i = 2, select("#", ...) do
+		res = res .. sep .. select(i, ...)
+	end
+	return res
+end
 table.wipe = function(t) for k in pairs(t) do t[k] = nil end end
 tinsert = table.insert
 twipe = table.wipe
