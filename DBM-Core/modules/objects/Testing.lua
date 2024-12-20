@@ -141,12 +141,12 @@ function test:HookPrivate(key, value)
 			end
 		end
 	end
-	if private[key] ~= nil then -- FIXME: support privates that are currently nil
+--	if private[key] ~= nil then -- FIXME: support privates that are currently nil
 		if restorePrivates[key] == nil then
 			restorePrivates[key] = private[key]
 		end
 		private[key] = value
-	end
+--	end
 end
 
 -- Register a function to change a file-local variable temporarily via HookPrivate

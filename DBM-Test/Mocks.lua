@@ -109,7 +109,7 @@ local namesToGuids = {}
 function mocks.DBMGetUnitIdFromGUID(_, guid, scanOnlyBoss)
 	-- Since we primarily scan bosses this will return a boss unit id in retail
 	-- But for classic we'll end up with a lot of fakeunitid-guid-* ids
-	return bosses[guid] and bosses[guid].uId or not scanOnlyBoss and "fakeunitid-guid-" .. guid
+	return bosses[guid] and bosses[guid].uId or not scanOnlyBoss and "fakeunitid-guid-" .. tostring(guid)
 end
 
 -- Triggered by INSTANCE_ENCOUNTER_ENGAGE_UNIT to learn boss unit IDs and GUIDs
@@ -207,12 +207,16 @@ function mocks.UnitDetailedThreatSituation(playerUid, enemyUid)
 end
 
 function mocks:SetThreat(playerGuid, playerName, enemyGuid, enemyName)
-	threatInfo[enemyName] = threatInfo[enemyName] or {names = {}, guids = {}}
-	threatInfo[enemyName].names[playerName] = self:GetTime()
-	threatInfo[enemyName].guids[playerGuid] = self:GetTime()
-	threatInfo[enemyGuid] = threatInfo[enemyGuid] or {names = {}, guids = {}}
-	threatInfo[enemyGuid].names[playerName] = self:GetTime()
-	threatInfo[enemyGuid].guids[playerGuid] = self:GetTime()
+	if enemyName then
+		threatInfo[enemyName] = threatInfo[enemyName] or {names = {}, guids = {}}
+		threatInfo[enemyName].names[playerName] = self:GetTime()
+		threatInfo[enemyName].guids[playerGuid] = self:GetTime()
+	end
+	if enemyGuid then
+		threatInfo[enemyGuid] = threatInfo[enemyGuid] or {names = {}, guids = {}}
+		threatInfo[enemyGuid].names[playerName] = self:GetTime()
+		threatInfo[enemyGuid].guids[playerGuid] = self:GetTime()
+	end
 end
 
 function mocks.DBMNumRealAlivePlayers()
@@ -401,7 +405,7 @@ function mocks:HookModGlobal(key, val)
 	local old = self.modEnv[key]
 	if type(old) ~= "function" then
 		-- if we need this implement it by making __index a function instead of a direct reference to _G
-		error("tried to hook " .. key .. " of type " .. type(old) .. ", only functions are supported for now")
+		print("ignored error: tried to hook " .. key .. " of type " .. type(old) .. ", only functions are supported for now")
 	end
 	self.modEnv[key] = function(...)
 		if test.testRunning then

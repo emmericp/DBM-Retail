@@ -51,6 +51,7 @@ do
 	---@param useSound boolean? Play 'ding' sound when displaying message
 	---@param alwaysFireEvent boolean? Used specifically for transcriptor logging
 	function DBM:Debug(text, level, useSound, alwaysFireEvent)
+		print("DEBUG", level, text)
 		--Still fire debug callbacks for transcriptor even if user level debug is not enabled
 		--Cap debug level to 2 for transcriptor unless user specifically specifies 3
 		if (DBM.Options and DBM.Options.DebugLevel == 3) or (level or 1) < 3 or alwaysFireEvent then

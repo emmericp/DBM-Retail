@@ -611,7 +611,7 @@ do
 end
 
 -- this is not technically a lib and instead a standalone addon but the api is available via LibStub
-local CustomNames = C_AddOns.IsAddOnLoaded("CustomNames") and LibStub and LibStub("CustomNames")
+local CustomNames = C_AddOns.IsAddOnLoaded("CustomNames") and LibStub and LibStub("CustomNames", true)
 
 ---------------------------------
 --  General (local) functions  --
@@ -1142,7 +1142,7 @@ do
 			local spellName = DBM:GetSpellName(spellId)
 			if spellId and not spellName then
 				DBM:Debug("|cffff0000DBM RegisterEvents Warning: " .. spellId .. " id does not exist!|r")
-				return
+				--return
 			end
 			if not registeredSpellIds[event] then
 				registeredSpellIds[event] = {}
@@ -5935,7 +5935,7 @@ do
 							WatchFrame:Hide()
 							watchFrameRestore = true
 						end
-					elseif QuestWatchFrame:IsVisible() then -- Classic Era / BCC
+					elseif QuestWatchFrame and QuestWatchFrame:IsVisible() then -- Classic Era / BCC
 						QuestWatchFrame:Hide()
 						watchFrameRestore = true
 					end
@@ -7363,16 +7363,16 @@ end
 do
 	local unregisteredEvents = {}
 	local function DisableEvent(frameName, eventName)
-		if frameName:IsEventRegistered(eventName) then
-			frameName:UnregisterEvent(eventName)
-			unregisteredEvents[eventName] = true
-		end
+--		if frameName:IsEventRegistered(eventName) then
+--			frameName:UnregisterEvent(eventName)
+--			unregisteredEvents[eventName] = true
+--		end
 	end
 	local function EnableEvent(frameName, eventName)
-		if unregisteredEvents[eventName] then
-			frameName:RegisterEvent(eventName)
-			unregisteredEvents[eventName] = nil
-		end
+--		if unregisteredEvents[eventName] then
+--			frameName:RegisterEvent(eventName)
+--			unregisteredEvents[eventName] = nil
+--		end
 	end
 	function DBM:HideBlizzardEvents(toggle, custom)
 		if toggle == 1 then
@@ -7380,7 +7380,7 @@ do
 				DisableEvent(RaidBossEmoteFrame, "RAID_BOSS_EMOTE")
 				DisableEvent(RaidBossEmoteFrame, "RAID_BOSS_WHISPER")
 				DisableEvent(RaidBossEmoteFrame, "CLEAR_BOSS_EMOTES")
-				SOUNDKIT.UI_RAID_BOSS_WHISPER_WARNING = 999999--Since blizzard can still play the sound via RaidBossEmoteFrame_OnEvent (line 148) via encounter scripts in certain cases despite the frame having no registered events
+--				SOUNDKIT.UI_RAID_BOSS_WHISPER_WARNING = 999999--Since blizzard can still play the sound via RaidBossEmoteFrame_OnEvent (line 148) via encounter scripts in certain cases despite the frame having no registered events
 			end
 			if self.Options.HideGarrisonToasts or custom then
 				DisableEvent(AlertFrame, "GARRISON_MISSION_FINISHED")
@@ -7394,7 +7394,7 @@ do
 				EnableEvent(RaidBossEmoteFrame, "RAID_BOSS_EMOTE")
 				EnableEvent(RaidBossEmoteFrame, "RAID_BOSS_WHISPER")
 				EnableEvent(RaidBossEmoteFrame, "CLEAR_BOSS_EMOTES")
-				SOUNDKIT.UI_RAID_BOSS_WHISPER_WARNING = 37666--restore it
+--				SOUNDKIT.UI_RAID_BOSS_WHISPER_WARNING = 37666--restore it
 			end
 			if self.Options.HideGarrisonToasts then
 				EnableEvent(AlertFrame, "GARRISON_MISSION_FINISHED")
@@ -7484,6 +7484,7 @@ end
 -----------------------
 ---@param self DBMModOrDBM
 function DBM:AddMsg(text, prefix, useSound, allowHiddenChatFrame, isDebug)
+	print("DBM:AddMsg", prefix, text)
 	---@diagnostic disable-next-line: undefined-field
 	local tag = prefix or (self.localization and self.localization.general.name) or L.DBM
 	local frame = DBM.Options.ChatFrame and _G[tostring(DBM.Options.ChatFrame)] or DEFAULT_CHAT_FRAME

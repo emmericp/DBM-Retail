@@ -867,6 +867,13 @@ frame:SetScript("OnUpdate", function(self)
 	end
 end)
 
+function DBM.Test.ResumeCoroutine()
+	if coroutine.status(currentThread) == "dead" then return false end
+	local ok, err = coroutine.resume(currentThread)
+	if not ok then error(err) end
+	return true
+end
+
 ---@class TestDefinition
 ---@field name string Unique test ID.
 ---@field gameVersion GameVersion Required version of the game to run the test.

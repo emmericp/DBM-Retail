@@ -66,6 +66,7 @@ function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 			break
 		end
 	end
+	addon = addon or {}
 	---@class DBMMod
 	local obj = setmetatable(
 		{
